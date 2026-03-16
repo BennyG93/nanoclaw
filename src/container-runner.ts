@@ -26,6 +26,7 @@ import {
   stopContainer,
 } from './container-runtime.js';
 import { detectAuthMode } from './credential-proxy.js';
+import { readEnvFile } from './env.js';
 import { validateAdditionalMounts } from './mount-security.js';
 import { RegisteredGroup } from './types.js';
 
@@ -220,6 +221,24 @@ function buildContainerArgs(
 
   // Pass host timezone so container's local time matches the user's
   args.push('-e', `TZ=${TIMEZONE}`);
+
+  // Pass MCP server credentials from .env to the container
+  const mcpEnv = readEnvFile([
+    'MDB_MCP_CONNECTION_STRING',
+    'GITHUB_PERSONAL_ACCESS_TOKEN',
+  ]);
+  if (mcpEnv.MDB_MCP_CONNECTION_STRING) {
+    args.push(
+      '-e',
+      `MDB_MCP_CONNECTION_STRING=${mcpEnv.MDB_MCP_CONNECTION_STRING}`,
+    );
+  }
+  if (mcpEnv.GITHUB_PERSONAL_ACCESS_TOKEN) {
+    args.push(
+      '-e',
+      `GITHUB_PERSONAL_ACCESS_TOKEN=${mcpEnv.GITHUB_PERSONAL_ACCESS_TOKEN}`,
+    );
+  }
 
   // Route API traffic through the credential proxy (containers never see real secrets)
   args.push(
