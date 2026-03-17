@@ -36,8 +36,9 @@ COPY --from=github-mcp /server/github-mcp-server /usr/local/bin/github-mcp-serve
 ENV AGENT_BROWSER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Install agent-browser and claude-code globally
-RUN npm install -g agent-browser @anthropic-ai/claude-code
+# Install agent-browser, claude-code, and MCP servers globally
+# Pre-installing MCP servers avoids npx downloading them on every container start
+RUN npm install -g agent-browser @anthropic-ai/claude-code mongodb-mcp-server
 
 # Create app directory
 WORKDIR /app

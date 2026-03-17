@@ -427,8 +427,8 @@ async function runQuery(
           },
         },
         mongodb: {
-          command: 'npx',
-          args: ['-y', 'mongodb-mcp-server@latest', '--readOnly'],
+          command: 'mongodb-mcp-server',
+          args: ['--readOnly'],
           env: {
             MDB_MCP_CONNECTION_STRING: process.env.MDB_MCP_CONNECTION_STRING || '',
           },
